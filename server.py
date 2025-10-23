@@ -16,7 +16,7 @@ app = FastAPI(title="Real-ESRGAN Image Upscaler", version="1.0.0")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origin_regex=r"http://.*:3000",  # Allow any IP on port 3000
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],  # Allow frontend
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],

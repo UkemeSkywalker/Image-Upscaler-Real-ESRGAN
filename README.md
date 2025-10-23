@@ -27,10 +27,10 @@ A production-ready FastAPI server for image upscaling using Real-ESRGAN with con
 ### 3. Test the Server
 ```bash
 # Check health
-curl http://localhost:8000/health
+curl http://107.20.181.38:8000/health
 
 # Test upscaling
-curl -X POST "http://localhost:8000/upscale?model=general&scale=4.0" \
+curl -X POST "http://107.20.181.38:8000/upscale?model=general&scale=4.0" \
      -H "Content-Type: multipart/form-data" \
      -F "file=@inputs/0014.png" \
      --output result.png
