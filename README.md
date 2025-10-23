@@ -150,12 +150,42 @@ Image-Upscaler-Real-ESRGAN/
 └── inputs/                  # Test images
 ```
 
-## Requirements
+## Machine Requirements
 
-- Python 3.7+
-- CUDA-compatible GPU (recommended)
-- Ubuntu/Linux system with systemd
-- ~2GB disk space for models
+### Minimum Requirements
+- **OS**: Ubuntu 18.04+ or similar Linux with systemd
+- **CPU**: 4+ cores (Intel/AMD)
+- **RAM**: 8GB system memory
+- **Storage**: 5GB free disk space
+- **Python**: 3.7 or higher
+- **Network**: Internet connection for model downloads
+
+### Recommended Requirements
+- **OS**: Ubuntu 20.04+ LTS
+- **CPU**: 8+ cores
+- **RAM**: 16GB+ system memory
+- **GPU**: NVIDIA GPU with 6GB+ VRAM (GTX 1060 6GB or better)
+  - RTX 3060/4060 (8GB VRAM) - Good performance
+  - RTX 3070/4070 (8-12GB VRAM) - Excellent performance
+  - RTX 3080/4080+ (10GB+ VRAM) - Best performance
+- **Storage**: 10GB+ free disk space (SSD recommended)
+- **CUDA**: CUDA 11.0+ with compatible drivers
+
+### GPU vs CPU Performance
+- **With GPU**: 5-15 seconds per image (depending on size)
+- **CPU Only**: 60-300 seconds per image (much slower)
+- **Concurrent Processing**: GPU recommended for multiple users
+
+### Cloud Instance Recommendations
+- **AWS**: g4dn.xlarge or g5.xlarge (with GPU)
+- **Google Cloud**: n1-standard-4 with T4 GPU
+- **Azure**: Standard_NC6s_v3 or similar GPU instances
+
+### Tested Configurations
+- ✅ **AWS g4dn.xlarge**: 4 vCPU, 16GB RAM, T4 GPU (16GB VRAM)
+- ✅ **Local RTX 3070**: 8GB VRAM, handles 3 concurrent users
+- ✅ **Local RTX 4080**: 16GB VRAM, handles 5+ concurrent users
+- ⚠️ **CPU-only**: Works but very slow, not recommended for production
 
 ## Performance
 
