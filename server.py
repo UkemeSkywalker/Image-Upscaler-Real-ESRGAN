@@ -4,10 +4,27 @@ from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from upscaler import ImageUpscaler
 import logging
+from logging.handlers import RotatingFileHandler
 import asyncio
+import os
 
-# Setup logging
-logging.basicConfig(level=logging.INFO)
+# Setup logging to file with rotation
+log_dir = "logs"
+os.makedirs(log_dir, exist_ok=True)
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        RotatingFileHandler(
+            os.path.join(log_dir, "realesrgan-server.log"),
+            maxBytes=10*1024*1024,  # 10MB per file
+            backupCount=5  # Keep 5 backup files
+        ),
+        logging.StreamHandler()  # Also log to console
+    ]
+)
 logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
