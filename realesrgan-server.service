@@ -1,0 +1,15 @@
+[Unit]
+Description=Real-ESRGAN Image Upscaler Server
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/home/ubuntu/Real-ESRGAN
+Environment=PATH=/home/ubuntu/.local/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=/usr/bin/python3 server.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

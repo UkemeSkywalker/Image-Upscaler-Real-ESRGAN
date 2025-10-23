@@ -1,0 +1,79 @@
+from fastapi import FastAPI, File, UploadFile, HTTPException, Query
+from fastapi.responses import Response
+import uvicorn
+from upscaler import ImageUpscaler
+import logging
+import asyncio
+
+# Setup logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Initialize FastAPI app
+app = FastAPI(title="Real-ESRGAN Image Upscaler", version="1.0.0")
+
+# Initialize upscaler
+upscaler = ImageUpscaler()
+
+# Concurrency control - limit to 3 concurrent GPU processes
+processing_semaphore = asyncio.Semaphore(3)
+
+@app.get("/")
+async def root():
+    return {"message": "Real-ESRGAN Image Upscaler Server", "models": upscaler.get_available_models()}
+
+@app.get("/health")
+async def health_check():
+    return {
+        "status": "healthy", 
+        "available_models": upscaler.get_available_models(),
+        "concurrent_limit": 3,
+        "available_slots": processing_semaphore._value
+    }
+
+@app.post("/upscale")
+async def upscale_image(
+    file: UploadFile = File(...),
+    model: str = Query(default="general", description="Model type: general or anime"),
+    scale: float = Query(default=4.0, ge=1.0, le=8.0, description="Upscale factor (1.0-8.0)")
+):
+    """Upscale an image using Real-ESRGAN"""
+    
+    # Validate file type
+    if not file.content_type.startswith('image/'):
+        raise HTTPException(status_code=400, detail="File must be an image")
+    
+    # Acquire semaphore to limit concurrent processing
+    async with processing_semaphore:
+        try:
+            # Read image bytes
+            image_bytes = await file.read()
+            logger.info(f"Processing image: {file.filename}, model: {model}, scale: {scale} (Queue position acquired)")
+            
+            # Upscale image (run in thread pool to avoid blocking)
+            loop = asyncio.get_event_loop()
+            result_bytes = await loop.run_in_executor(
+                None, 
+                upscaler.upscale_image, 
+                image_bytes, 
+                model, 
+                scale
+            )
+            
+            logger.info(f"Completed processing: {file.filename}")
+            
+            # Return upscaled image
+            return Response(
+                content=result_bytes,
+                media_type="image/png",
+                headers={"Content-Disposition": f"attachment; filename=upscaled_{file.filename}"}
+            )
+            
+        except ValueError as e:
+            raise HTTPException(status_code=400, detail=str(e))
+        except Exception as e:
+            logger.error(f"Error processing image: {str(e)}")
+            raise HTTPException(status_code=500, detail="Internal server error")
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
