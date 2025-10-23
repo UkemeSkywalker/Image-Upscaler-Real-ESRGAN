@@ -1,5 +1,6 @@
 from fastapi import FastAPI, File, UploadFile, HTTPException, Query
 from fastapi.responses import Response
+from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 from upscaler import ImageUpscaler
 import logging
@@ -11,6 +12,15 @@ logger = logging.getLogger(__name__)
 
 # Initialize FastAPI app
 app = FastAPI(title="Real-ESRGAN Image Upscaler", version="1.0.0")
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=r"http://.*:3000",  # Allow any IP on port 3000
+    allow_credentials=True,
+    allow_methods=["GET", "POST"],
+    allow_headers=["*"],
+)
 
 # Initialize upscaler
 upscaler = ImageUpscaler()
