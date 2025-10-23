@@ -33,7 +33,7 @@ app = FastAPI(title="Real-ESRGAN Image Upscaler", version="1.0.0")
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "https://pq8iuiyjvg.us-east-1.awsapprunner.com"],  # Allow frontend
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "https://pq8iuiyjvg.us-east-1.awsapprunner.com", "https://d2qxv8n4kginy3.cloudfront.net"],  # Allow frontend
     allow_credentials=True,
     allow_methods=["GET", "POST"],
     allow_headers=["*"],
